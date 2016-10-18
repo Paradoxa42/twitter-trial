@@ -1,20 +1,12 @@
 var app = require('express')();
-var session = require('cookie-session');
 var bodyParser = require('body-parser');
 var Twitter = require('twitter-node-client').Twitter;
 var server = require('http').createServer(app);
 
-app.use(session({secret: 'BurnBabyBurn'}))
-    .use(function(req, res, next)
-	 {
-	     if (typeof(req.session.score) == undefined)
-		 req.session.score = 0
-	     next();
-	 })
-    .get('/', function(req, res)
-	 {
-	     res.render('client_menu.ejs');
-	 })
+app.get('/', function(req, res)
+	{
+	    res.render('client_menu.ejs');
+	})
     .get('/trial', function(req, res)
 	 {
 	     res.render('client_trial.ejs');
@@ -23,5 +15,18 @@ app.use(session({secret: 'BurnBabyBurn'}))
 	 {
 	     res.render('client_hof.ejs');
 	 })
+
+var io = require('socket.io').listen(server);
+
+io.sockets.on('connection', function(socket)
+	      {
+                  socket.score = 0;
+		  socket.emit('score', 0);
+	      })
+    .sockets.on('twitt_ex', function(socket)
+		{
+		    socket.score++;
+		    socket.emit('score', socket.score);
+		});
 
 server.listen(8080);

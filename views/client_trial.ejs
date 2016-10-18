@@ -6,7 +6,12 @@
 
     <body>
       <h1>Le Défi</h1>
-      <ul><a href="/menu">le menu</a></ul>
+      <ul><a href="/">le menu</a></ul>
       <ul><a href="/hallOfFame">hall of fame</a></ul>
+      <script src="/socket.io/socket.io.js"></script>
+      <script>
+	var socket = io.connect('http://localhost:8080');
+	
+      </script>
     </body>
 </html>
