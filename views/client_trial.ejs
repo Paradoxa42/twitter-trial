@@ -2,16 +2,50 @@
 <html>
     <head>
         <title>La twitter APP</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.0.0/pixi.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
     </head>
 
     <body>
-      <h1>Le Défi</h1>
-      <ul><a href="/">le menu</a></ul>
-      <ul><a href="/hallOfFame">hall of fame</a></ul>
-      <script src="/socket.io/socket.io.js"></script>
       <script>
-	     var socket = io.connect('http://localhost:8080');
 
-      </script>
+        var socket = io.connect('http://localhost:8080');
+        var stage = new PIXI.Container();
+        var renderer = PIXI.autoDetectRenderer(window.innerWidth,window.innerHeight, {transparent:true});
+        document.body.appendChild(renderer.view);
+        var sc = new PIXI.Text("rien", {fontFamily:"bold Arial", fill:"red"});
+        sc.position.x = 0;
+        sc.position.y = 0;
+        stage.addChild(sc);
+        renderer.render(stage);
+        function createTweet(x, y, tweet)
+        {
+          console.log(x, y)
+          tw = new PIXI.Container();
+          texture = new PIXI.Sprite(PIXI.Texture.fromImage("sapristille.png"));
+          texture.position.x = x;
+          texture.position.y = y;
+          tw.addChild(texture);
+          tw.interactive = true;
+          tw.mousedown = function(data)
+          {
+            socket.emit('tweet_ex', {});
+            tw.destroy();
+          }
+          stage.addChild(tw);
+          renderer.render(stage);
+        }
+        socket.on('tweet', function(tweet)
+        {
+          createTweet(Math.floor((Math.random() * 1900) + 100), Math.floor((Math.random() * 1080)), tweet);
+          renderer.render(stage);
+        });
+        socket.on('score', function(score)
+        {
+          sc.text = "" + score;
+          renderer.render(stage);
+        });
+        createTweet(20, 20, 0);
+        </script>
     </body>
 </html>
