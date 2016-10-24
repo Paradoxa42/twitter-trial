@@ -8,7 +8,8 @@ var pixi = require('pixi')
 var cnf = '';
 var fs = require('fs');
 fs.readFile('config.txt', 'utf8', function(err, contents) {
-		cnf = contents.split(",");
+		cnf = contents.replace('\n','');
+		console.log(cnf);
 });
 
 app.use(require('express').static('public'));
@@ -26,6 +27,8 @@ app.get('/', function(req, res)
 	     res.render('client_hof.ejs');
 	 })
 
+//Etablissement de L'API twitter
+var twitterSearchClient = new Twitter.SearchClient('FkdOiZc663EQtsBJB6FhGtgE5','xPbDmVaWjRoBXUC8LpdWf1YIshxfXo0B6rWxvgAal13hI1Km3s','790315200557768704-n46IDXQuwkwV5y8TUzHiPdGfF3vjT7o','MRQISKaO9X8VHq2md9RKRJ8H86ZjlE6Et7BFA9ExWf7BD');
 /*etablissement des sockets et des données de communications*/
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function(socket)
@@ -37,22 +40,24 @@ io.sockets.on('connection', function(socket)
 	      		socket.score++;
 	      		socket.emit('score', socket.score);
 					});
-					/*On set l'API de stream twitter*/
-					var twitterStreamClient = new Twitter.StreamClient('FkdOiZc663EQtsBJB6FhGtgE5',' xPbDmVaWjRoBXUC8LpdWf1YIshxfXo0B6rWxvgAal13hI1Km3s','790315200557768704-vjcJmRa0nbOfFcyhKA2L72HqcThywUo',' gPaTWDhbPg5xnwNRw1W1r53NmCj11b7kXb5xPbOc0yxOR');
-					twitterStreamClient.on('close', function() {
-    				console.log('Connection closed.');
+					twitterSearchClient.search({'q': cnf}, function(error, result) {
+    				if (error)
+    				{
+        				console.log('Error: ' + (error.code ? error.code + ' ' + error.message : error.message));
+    				}
+    				if (result)
+    				{
+							socket.emit('tweet', result);
+        			console.log('tweet');
+    				}
 					});
-					twitterStreamClient.on('end', function() {
-    				console.log('End of Line.');
+					//Quand un tweet est get on l'emet
+					/*twitterStreamClient.on('tweet', function(tweet) {
+										//socket.emit('tweet', tweet);
+										//console.log(tweet);
+										console.log('tweet.');
 					});
-					twitterStreamClient.on('error', function(error) {
-    				console.log('Error: ' + (error.code ? error.code + ' ' + error.message : error.message));
-					});
-					twitterStreamClient.on('tweet', function(tweet) {
-						//socket.emit('tweet', tweet);
-						console.log(tweet);
-					});
-					twitterStreamClient.start(cnf);
+					twitterStreamClient.start(cnf);*/
+					console.log("connection");
 				});
-
 server.listen(8080);

@@ -18,6 +18,7 @@
         sc.position.y = 0;
         stage.addChild(sc);
         renderer.render(stage);
+
         function createTweet(x, y, tweet)
         {
           console.log(x, y)
@@ -35,6 +36,7 @@
           stage.addChild(tw);
           renderer.render(stage);
         }
+
         socket.on('tweet', function(tweet)
         {
           createTweet(Math.floor((Math.random() * 1900) + 100), Math.floor((Math.random() * 1080)), tweet);
@@ -45,6 +47,7 @@
           sc.text = "" + score;
           renderer.render(stage);
         });
+
         createTweet(20, 20, 0);
         </script>
     </body>
