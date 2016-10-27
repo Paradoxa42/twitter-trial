@@ -28,9 +28,10 @@
           texture.position.y = y;
           tw.addChild(texture);
           tw.interactive = true;
-          tw.mousedown = function(data)
+          texture.mousedown = function(data)
           {
             socket.emit('tweet_ex', {});
+            texture.destroy();
             tw.destroy();
           }
           stage.addChild(tw);

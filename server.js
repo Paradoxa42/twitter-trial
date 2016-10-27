@@ -28,7 +28,17 @@ app.get('/', function(req, res)
 	 })
 
 //Etablissement de L'API twitter
+//var twitterStreamClient = new Twitter.StreamClient('FkdOiZc663EQtsBJB6FhGtgE5','xPbDmVaWjRoBXUC8LpdWf1YIshxfXo0B6rWxvgAal13hI1Km3s','790315200557768704-n46IDXQuwkwV5y8TUzHiPdGfF3vjT7o','MRQISKaO9X8VHq2md9RKRJ8H86ZjlE6Et7BFA9ExWf7BD');
 var twitterSearchClient = new Twitter.SearchClient('FkdOiZc663EQtsBJB6FhGtgE5','xPbDmVaWjRoBXUC8LpdWf1YIshxfXo0B6rWxvgAal13hI1Km3s','790315200557768704-n46IDXQuwkwV5y8TUzHiPdGfF3vjT7o','MRQISKaO9X8VHq2md9RKRJ8H86ZjlE6Et7BFA9ExWf7BD');
+/*twitterStreamClient.on('close', function() {
+    console.log('Connection closed.');
+});
+twitterStreamClient.on('end', function() {
+    console.log('End of Line.');
+});
+twitterStreamClient.on('error', function(error) {
+    console.log('Error: ' + (error.code ? error.code + ' ' + error.message : error.message));
+});
 /*etablissement des sockets et des données de communications*/
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function(socket)
@@ -41,23 +51,30 @@ io.sockets.on('connection', function(socket)
 	      		socket.emit('score', socket.score);
 					});
 					twitterSearchClient.search({'q': cnf}, function(error, result) {
-    				if (error)
-    				{
-        				console.log('Error: ' + (error.code ? error.code + ' ' + error.message : error.message));
-    				}
-    				if (result)
-    				{
-							socket.emit('tweet', result);
-        			console.log('tweet');
-    				}
+    					if (error)
+    					{
+        					console.log('Error: ' + (error.code ? error.code + ' ' + error.message : error.message));
+    					}
+    					if (result)
+    					{
+								console.log('tweet get');
+								i = 0;
+								while (result.statuses[i])
+								{
+										socket.emit('tweet', {'userName' : result.statuses[i].user.name, 'screenName' : result.statuses[i].user.screen_name, 'pic' : result.statuses[i].user.profile_image_url, 'text' : result.statuses[i].text});
+										console.log(result.statuses[i].id);
+										i++;
+								}
+								console.log('tweet sent');
+    					}
 					});
 					//Quand un tweet est get on l'emet
 					/*twitterStreamClient.on('tweet', function(tweet) {
-										//socket.emit('tweet', tweet);
+										socket.emit('tweet', tweet);
 										//console.log(tweet);
 										console.log('tweet.');
 					});
-					twitterStreamClient.start(cnf);*/
+					twitterStreamClient.start([cnf]);*/
 					console.log("connection");
 				});
 server.listen(8080);
