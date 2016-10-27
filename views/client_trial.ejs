@@ -17,24 +17,24 @@
         sc.position.y = 0;
         stage.addChild(sc);
         renderer.render(stage);
-
+        tweets = new Object();
         function createTweet(x, y, tweet)
         {
           console.log(x, y)
-          tw = new PIXI.Container();
+          tweets[tweet.id] = new PIXI.Container();
           texture = new PIXI.Sprite(PIXI.Texture.fromImage("template-tweet.png"));
           texture.position.x = x;
           texture.position.y = y;
-          tw.addChild(texture);
+          tweets[tweet.id].addChild(texture);
           renderer.render(texture);
           username = new PIXI.Text(tweet.userName, {fontFamily:"bold Arial", fontSize : 30});
           username.position.x = x + 100;
           username.position.y = y + 20;
-          tw.addChild(username);
+          tweets[tweet.id].addChild(username);
           screenName = new PIXI.Text("@" + tweet.screenName, {fontFamily:"bold Arial", fontSize : 30, fill:"grey"});
           screenName.position.x = x + 100;
           screenName.position.y = y + 50;
-          tw.addChild(screenName);
+          tweets[tweet.id].addChild(screenName);
           /*pic = new PIXI.Texture(PIXI.Texture.fromImage(pic));
           pic.position.x = x + 10;
           pic.position.y = y + 20;
@@ -42,16 +42,16 @@
           screenName = new PIXI.Text(tweet.text, {fontFamily:"bold Arial", fontSize : 25});
           screenName.position.x = x + 20;
           screenName.position.y = y + 100;
-          tw.addChild(screenName);
-          tw.interactive = true;
-          tw.mousedown = function(data)
+          tweets[tweet.id].addChild(screenName);
+          tweets[tweet.id].interactive = true;
+          tweets[tweet.id].mousedown = function(data)
           {
             texture.destroy();
             socket.emit('tweet_ex', {});
-            tw.destroy();
+            tweets[tweet.id].destroy();
             renderer.render(stage);
           }
-          stage.addChild(tw);
+          stage.addChild(tweets[tweet.id]);
           renderer.render(stage);
         }
         socket.on('tweet', function(tweet)

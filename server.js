@@ -85,7 +85,7 @@ io.sockets.on('connection', function(socket)
 										console.log(result.statues[tmp]);
 									}
 									console.log(result.statuses[i]);
-									socket.emit('tweet', {'userName' : result.statuses[tmp].user.name, 'screenName' : result.statuses[tmp].user.screen_name, 'pic' : result.statuses[tmp].user.profile_image_url, 'text' : formatTxt(result.statuses[tmp].text)});
+									socket.emit('tweet', {'id' : result.statuses[tmp].id, 'userName' : result.statuses[tmp].user.name, 'screenName' : result.statuses[tmp].user.screen_name, 'pic' : result.statuses[tmp].user.profile_image_url, 'text' : formatTxt(result.statuses[tmp].text)});
 								}
 								console.log('tweet sent');
     					}
