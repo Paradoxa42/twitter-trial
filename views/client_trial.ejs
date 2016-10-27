@@ -2,13 +2,12 @@
 <html>
     <head>
         <title>La twitter APP</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.0.0/pixi.min.js"></script>
+        <script src="pixi.js"></script>
         <script src="/socket.io/socket.io.js"></script>
     </head>
 
     <body>
       <script>
-
         var socket = io.connect('http://localhost:8080');
         var stage = new PIXI.Container();
         var renderer = PIXI.autoDetectRenderer(window.innerWidth,window.innerHeight, {transparent:true});
@@ -23,33 +22,48 @@
         {
           console.log(x, y)
           tw = new PIXI.Container();
-          texture = new PIXI.Sprite(PIXI.Texture.fromImage("sapristille.png"));
+          texture = new PIXI.Sprite(PIXI.Texture.fromImage("template-tweet.png"));
           texture.position.x = x;
           texture.position.y = y;
           tw.addChild(texture);
+          renderer.render(texture);
+          username = new PIXI.Text(tweet.userName, {fontFamily:"bold Arial", fontSize : 30});
+          username.position.x = x + 100;
+          username.position.y = y + 20;
+          tw.addChild(username);
+          screenName = new PIXI.Text("@" + tweet.screenName, {fontFamily:"bold Arial", fontSize : 30, fill:"grey"});
+          screenName.position.x = x + 100;
+          screenName.position.y = y + 50;
+          tw.addChild(screenName);
+          /*pic = new PIXI.Texture(PIXI.Texture.fromImage(pic));
+          pic.position.x = x + 10;
+          pic.position.y = y + 20;
+          tw.addChild(pic);*/
+          screenName = new PIXI.Text(tweet.text, {fontFamily:"bold Arial", fontSize : 25});
+          screenName.position.x = x + 20;
+          screenName.position.y = y + 100;
+          tw.addChild(screenName);
           tw.interactive = true;
-          texture.mousedown = function(data)
+          tw.mousedown = function(data)
           {
-            socket.emit('tweet_ex', {});
             texture.destroy();
+            socket.emit('tweet_ex', {});
             tw.destroy();
+            renderer.render(stage);
           }
           stage.addChild(tw);
           renderer.render(stage);
         }
-
         socket.on('tweet', function(tweet)
         {
-          createTweet(Math.floor((Math.random() * 1900) + 100), Math.floor((Math.random() * 1080)), tweet);
-          renderer.render(stage);
+          console.log('tweet');
+          createTweet(Math.floor((Math.random() * 1960) + 100), Math.floor((Math.random() * 1080)), tweet);
         });
         socket.on('score', function(score)
         {
           sc.text = "" + score;
           renderer.render(stage);
         });
-
-        createTweet(20, 20, 0);
         </script>
     </body>
 </html>

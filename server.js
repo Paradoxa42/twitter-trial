@@ -27,6 +27,22 @@ app.get('/', function(req, res)
 	     res.render('client_hof.ejs');
 	 })
 
+function insert(str, index, value)
+{
+	   return str.substr(0, index) + value + str.substr(index);
+}
+function formatTxt(str)
+{
+		limit = i = 60;
+		while (i < str.length)
+		{
+			str = insert(str, i, "\n");
+			i += limit;
+		}
+		console.log(str);
+		return str;
+}
+
 //Etablissement de L'API twitter
 //var twitterStreamClient = new Twitter.StreamClient('FkdOiZc663EQtsBJB6FhGtgE5','xPbDmVaWjRoBXUC8LpdWf1YIshxfXo0B6rWxvgAal13hI1Km3s','790315200557768704-n46IDXQuwkwV5y8TUzHiPdGfF3vjT7o','MRQISKaO9X8VHq2md9RKRJ8H86ZjlE6Et7BFA9ExWf7BD');
 var twitterSearchClient = new Twitter.SearchClient('FkdOiZc663EQtsBJB6FhGtgE5','xPbDmVaWjRoBXUC8LpdWf1YIshxfXo0B6rWxvgAal13hI1Km3s','790315200557768704-n46IDXQuwkwV5y8TUzHiPdGfF3vjT7o','MRQISKaO9X8VHq2md9RKRJ8H86ZjlE6Et7BFA9ExWf7BD');
@@ -59,11 +75,17 @@ io.sockets.on('connection', function(socket)
     					{
 								console.log('tweet get');
 								i = 0;
-								while (result.statuses[i])
+								console.log(result);
+								for (tmp in result.statuses)
 								{
-										socket.emit('tweet', {'userName' : result.statuses[i].user.name, 'screenName' : result.statuses[i].user.screen_name, 'pic' : result.statuses[i].user.profile_image_url, 'text' : result.statuses[i].text});
-										console.log(result.statuses[i].id);
-										i++;
+									if  (tmp == 0 && i == 1)
+									{
+										if (tmp == 0 && i == 0)
+											i = 1;
+										console.log(result.statues[tmp]);
+									}
+									console.log(result.statuses[i]);
+									socket.emit('tweet', {'userName' : result.statuses[tmp].user.name, 'screenName' : result.statuses[tmp].user.screen_name, 'pic' : result.statuses[tmp].user.profile_image_url, 'text' : formatTxt(result.statuses[tmp].text)});
 								}
 								console.log('tweet sent');
     					}
