@@ -9,7 +9,7 @@ var cnf = '';
 var fs = require('fs');
 fs.readFile('config.txt', 'utf8', function(err, contents) {
 		cnf = contents.replace('\n','');
-		console.log(cnf);
+		console.log("config : " + cnf);
 });
 
 app.use(require('express').static('public'));
@@ -39,7 +39,6 @@ function formatTxt(str)
 			str = insert(str, i, "\n");
 			i += limit;
 		}
-		console.log(str);
 		return str;
 }
 
@@ -75,16 +74,13 @@ io.sockets.on('connection', function(socket)
     					{
 								console.log('tweet get');
 								i = 0;
-								console.log(result);
 								for (tmp in result.statuses)
 								{
 									if  (tmp == 0 && i == 1)
 									{
 										if (tmp == 0 && i == 0)
 											i = 1;
-										console.log(result.statues[tmp]);
 									}
-									console.log(result.statuses[i]);
 									socket.emit('tweet', {'id' : result.statuses[tmp].id, 'userName' : result.statuses[tmp].user.name, 'screenName' : result.statuses[tmp].user.screen_name, 'pic' : result.statuses[tmp].user.profile_image_url, 'text' : formatTxt(result.statuses[tmp].text)});
 								}
 								console.log('tweet sent');

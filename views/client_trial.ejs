@@ -51,13 +51,15 @@
             tweets[tweet.id].destroy();
             renderer.render(stage);
           }
+          return tweets[tweet.id]
           stage.addChild(tweets[tweet.id]);
-          renderer.render(stage);
         }
         socket.on('tweet', function(tweet)
         {
           console.log('tweet');
-          createTweet(Math.floor((Math.random() * 1960) + 100), Math.floor((Math.random() * 1080)), tweet);
+          tw = createTweet(Math.floor((Math.random() * 1960) + 100), Math.floor((Math.random() * 1080)), tweet);
+          stage.addChild(tw);
+          renderer.render(stage);
         });
         socket.on('score', function(score)
         {
