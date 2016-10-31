@@ -49,8 +49,9 @@ var T = new Twit({
   access_token:         '790315200557768704-n46IDXQuwkwV5y8TUzHiPdGfF3vjT7o',
   access_token_secret:  'MRQISKaO9X8VHq2md9RKRJ8H86ZjlE6Et7BFA9ExWf7BD',
 })
-var stream = T.stream('statuses/filter', { track : [getCnf()]});
-console.log("configuration " + getCnf());
+cnf = getCnf();
+var stream = T.stream('statuses/filter', { track: [cnf]});
+console.log("configuration " + cnf);
 /*etablissement des sockets et des données de communications*/
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function(socket)
@@ -65,7 +66,7 @@ io.sockets.on('connection', function(socket)
 					var weekAgo = new Date();
 					weekAgo.setDate(weekAgo.getDate() - 7);
 					//On fait d'abord une recherche des tweets de la semaine pour pas avoir un écran vide au début
-					T.get('search/tweets', { q: getCnf() + ' since:' + weekAgo.getUTCFullYear() + '-' + weekAgo.getUTCMonth() + '-' + weekAgo.getUTCDate(), count: 20 }, function(err, data, response) {
+					T.get('search/tweets', { q: cnf + ' since:' + weekAgo.getUTCFullYear() + '-' + weekAgo.getUTCMonth() + '-' + weekAgo.getUTCDate(), count: 20 }, function(err, data, response) {
   					for (tmp in data.statuses) {
 							socket.emit('tweet', {'id' : data.statuses[tmp].id, 'userName' : data.statuses[tmp].user.name, 'screenName' : data.statuses[tmp].user.screen_name, 'pic' : data.statuses[tmp].user.profile_image_url, 'text' : formatTxt(data.statuses[tmp].text)});
 						}
